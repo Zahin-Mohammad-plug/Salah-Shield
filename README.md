@@ -1,0 +1,1 @@
+This is Salah shield, an IOS app designed to block out distractions during prayer times.
