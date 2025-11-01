@@ -13,6 +13,7 @@ struct LocationSetupView: View {
     @State private var selectedCity: String = ""
     @State private var searchText: String = ""
     @State private var useLocation: Bool = true
+    @State private var showLocationError: Bool = false
     
     let onContinue: () -> Void
     
@@ -54,14 +55,31 @@ struct LocationSetupView: View {
                                 Text("Use Current Location")
                                     .font(.system(size: 16, weight: .semibold))
                                 
-                                Text("Automatically updates when traveling")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.secondary)
+                                if let city = appState.selectedCity, appState.locationPermissionStatus == .authorized {
+                                    Text(city)
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.accentColor)
+                                } else {
+                                    Text("Automatically updates when traveling")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.secondary)
+                                }
                             }
                             
                             Spacer()
                             
                             Toggle("", isOn: $useLocation)
+                        }
+                        
+                        // Show location status
+                        if useLocation && appState.locationPermissionStatus == .denied {
+                            SSBanner(
+                                message: "Location access denied. Please enable in Settings.",
+                                type: .error,
+                                action: {
+                                    appState.requestLocationAccess()
+                                }
+                            )
                         }
                     }
                 }
@@ -77,16 +95,27 @@ struct LocationSetupView: View {
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .autocapitalization(.words)
                             
-                            // Sample cities
+                            // Sample cities (TODO: Replace with actual city search)
                             VStack(spacing: DesignSystem.Spacing.sm) {
                                 CityRow(name: "New York, USA", isSelected: selectedCity == "New York") {
                                     selectedCity = "New York"
+                                    appState.setManualCity("New York, USA", latitude: 40.7128, longitude: -74.0060)
                                 }
                                 CityRow(name: "London, UK", isSelected: selectedCity == "London") {
                                     selectedCity = "London"
+                                    appState.setManualCity("London, UK", latitude: 51.5074, longitude: -0.1278)
                                 }
                                 CityRow(name: "Dubai, UAE", isSelected: selectedCity == "Dubai") {
                                     selectedCity = "Dubai"
+                                    appState.setManualCity("Dubai, UAE", latitude: 25.2048, longitude: 55.2708)
+                                }
+                                CityRow(name: "Toronto, Canada", isSelected: selectedCity == "Toronto") {
+                                    selectedCity = "Toronto"
+                                    appState.setManualCity("Toronto, Canada", latitude: 43.6532, longitude: -79.3832)
+                                }
+                                CityRow(name: "Makkah, Saudi Arabia", isSelected: selectedCity == "Makkah") {
+                                    selectedCity = "Makkah"
+                                    appState.setManualCity("Makkah, Saudi Arabia", latitude: 21.4225, longitude: 39.8262)
                                 }
                             }
                         }
@@ -100,15 +129,9 @@ struct LocationSetupView: View {
             // Buttons
             VStack(spacing: DesignSystem.Spacing.md) {
                 SSButton("Continue", style: .primary, size: .large) {
-                    if useLocation {
-                        // Request location permission
-                        appState.locationPermissionStatus = .authorized
-                    } else {
-                        appState.selectedCity = selectedCity
-                    }
-                    onContinue()
+                    handleContinue()
                 }
-                .disabled(!useLocation && selectedCity.isEmpty)
+                .disabled(!canContinue)
                 
                 Button("Skip for now") {
                     onContinue()
@@ -120,6 +143,36 @@ struct LocationSetupView: View {
             .padding(.bottom, DesignSystem.Spacing.xl)
         }
         .background(DesignSystem.Colors.background)
+        .onAppear {
+            // Request location permission immediately when view appears if using location
+            if useLocation && appState.locationPermissionStatus == .notDetermined {
+                appState.requestLocationAccess()
+            }
+        }
+        .onChange(of: useLocation) { newValue in
+            if newValue {
+                // Request location permission when toggled on
+                appState.requestLocationAccess()
+            }
+        }
+    }
+    
+    private var canContinue: Bool {
+        if useLocation {
+            return appState.locationPermissionStatus == .authorized
+        } else {
+            return !selectedCity.isEmpty
+        }
+    }
+    
+    private func handleContinue() {
+        if useLocation {
+            // Already handled by AppState binding
+            onContinue()
+        } else {
+            // Manual city already set via CityRow action
+            onContinue()
+        }
     }
 }
 

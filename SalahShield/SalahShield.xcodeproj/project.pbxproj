@@ -6,13 +6,30 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9AB4C2722EB5E0A7009684EE /* Adhan in Frameworks */ = {isa = PBXBuildFile; productRef = 9AB4C2712EB5E0A7009684EE /* Adhan */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		9A4720A82EB5CADA00F60206 /* SalahShield.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SalahShield.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9AB4C2762EB5E496009684EE /* Exceptions for "SalahShield" folder in "SalahShield" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9A4720A72EB5CADA00F60206 /* SalahShield */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9A4720AA2EB5CADA00F60206 /* SalahShield */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9AB4C2762EB5E496009684EE /* Exceptions for "SalahShield" folder in "SalahShield" target */,
+			);
 			path = SalahShield;
 			sourceTree = "<group>";
 		};
@@ -23,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9AB4C2722EB5E0A7009684EE /* Adhan in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +83,7 @@
 			);
 			name = SalahShield;
 			packageProductDependencies = (
+				9AB4C2712EB5E0A7009684EE /* Adhan */,
 			);
 			productName = SalahShield;
 			productReference = 9A4720A82EB5CADA00F60206 /* SalahShield.app */;
@@ -94,6 +113,9 @@
 			);
 			mainGroup = 9A47209F2EB5CADA00F60206;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9AB4C2702EB5E0A7009684EE /* XCRemoteSwiftPackageReference "adhan-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9A4720A92EB5CADA00F60206 /* Products */;
 			projectDirPath = "";
@@ -256,6 +278,10 @@
 				DEVELOPMENT_TEAM = P7MM2B3QZZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SalahShield/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "SalahShield needs your location to calculate accurate prayer times.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -284,6 +310,10 @@
 				DEVELOPMENT_TEAM = P7MM2B3QZZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SalahShield/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "SalahShield needs your location to calculate accurate prayer times.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -324,6 +354,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9AB4C2702EB5E0A7009684EE /* XCRemoteSwiftPackageReference "adhan-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/batoulapps/adhan-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9AB4C2712EB5E0A7009684EE /* Adhan */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9AB4C2702EB5E0A7009684EE /* XCRemoteSwiftPackageReference "adhan-swift" */;
+			productName = Adhan;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9A4720A02EB5CADA00F60206 /* Project object */;
 }
