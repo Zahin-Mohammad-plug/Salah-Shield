@@ -2,19 +2,22 @@
 //  SalahShieldApp.swift
 //  SalahShield
 //
-//  Created by Zahin M on 2025-11-01.
+//  Created on November 1, 2025.
 //
 
 import SwiftUI
 
 @main
 struct SalahShieldApp: App {
-    let persistenceController = PersistenceController.shared
-
+    @StateObject private var appState = AppState()
+    @StateObject private var themeManager = ThemeManager()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                .environmentObject(appState)
+                .environmentObject(themeManager)
+                .preferredColorScheme(themeManager.colorScheme)
         }
     }
 }

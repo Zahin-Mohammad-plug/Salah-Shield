@@ -31,11 +31,10 @@ struct SSBanner: View {
     
     var body: some View {
         HStack(spacing: DesignSystem.Spacing.sm) {
-            if let icon = icon ?? type.defaultIcon {
-                Image(systemName: icon)
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(type.color)
-            }
+            let displayIcon = icon ?? type.defaultIcon
+            Image(systemName: displayIcon)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(type.color)
             
             Text(message)
                 .font(.system(size: 14, weight: .medium))
