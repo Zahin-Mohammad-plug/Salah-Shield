@@ -1,6 +1,6 @@
 //
-//  SalahSheildApp.swift
-//  SalahSheild
+//  SalahShieldApp.swift
+//  SalahShield
 //
 //  Created by Zahin M on 2025-11-01.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct SalahSheildApp: App {
+struct SalahShieldApp: App {
     let persistenceController = PersistenceController.shared
 
     var body: some Scene {

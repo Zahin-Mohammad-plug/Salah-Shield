@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		9AB440AA2EB5C8320096CBFE /* SalahSheild.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SalahSheild.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A4720A82EB5CADA00F60206 /* SalahShield.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SalahShield.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		9AB440AC2EB5C8320096CBFE /* SalahSheild */ = {
+		9A4720AA2EB5CADA00F60206 /* SalahShield */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SalahSheild;
+			path = SalahShield;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		9AB440A72EB5C8320096CBFE /* Frameworks */ = {
+		9A4720A52EB5CADA00F60206 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,18 +29,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9AB440A12EB5C8320096CBFE = {
+		9A47209F2EB5CADA00F60206 = {
 			isa = PBXGroup;
 			children = (
-				9AB440AC2EB5C8320096CBFE /* SalahSheild */,
-				9AB440AB2EB5C8320096CBFE /* Products */,
+				9A4720AA2EB5CADA00F60206 /* SalahShield */,
+				9A4720A92EB5CADA00F60206 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		9AB440AB2EB5C8320096CBFE /* Products */ = {
+		9A4720A92EB5CADA00F60206 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9AB440AA2EB5C8320096CBFE /* SalahSheild.app */,
+				9A4720A82EB5CADA00F60206 /* SalahShield.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,64 +48,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9AB440A92EB5C8320096CBFE /* SalahSheild */ = {
+		9A4720A72EB5CADA00F60206 /* SalahShield */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9AB440BA2EB5C8340096CBFE /* Build configuration list for PBXNativeTarget "SalahSheild" */;
+			buildConfigurationList = 9A4720B82EB5CADB00F60206 /* Build configuration list for PBXNativeTarget "SalahShield" */;
 			buildPhases = (
-				9AB440A62EB5C8320096CBFE /* Sources */,
-				9AB440A72EB5C8320096CBFE /* Frameworks */,
-				9AB440A82EB5C8320096CBFE /* Resources */,
+				9A4720A42EB5CADA00F60206 /* Sources */,
+				9A4720A52EB5CADA00F60206 /* Frameworks */,
+				9A4720A62EB5CADA00F60206 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				9AB440AC2EB5C8320096CBFE /* SalahSheild */,
+				9A4720AA2EB5CADA00F60206 /* SalahShield */,
 			);
-			name = SalahSheild;
+			name = SalahShield;
 			packageProductDependencies = (
 			);
-			productName = SalahSheild;
-			productReference = 9AB440AA2EB5C8320096CBFE /* SalahSheild.app */;
+			productName = SalahShield;
+			productReference = 9A4720A82EB5CADA00F60206 /* SalahShield.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		9AB440A22EB5C8320096CBFE /* Project object */ = {
+		9A4720A02EB5CADA00F60206 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
-					9AB440A92EB5C8320096CBFE = {
+					9A4720A72EB5CADA00F60206 = {
 						CreatedOnToolsVersion = 16.4;
 					};
 				};
 			};
-			buildConfigurationList = 9AB440A52EB5C8320096CBFE /* Build configuration list for PBXProject "SalahSheild" */;
+			buildConfigurationList = 9A4720A32EB5CADA00F60206 /* Build configuration list for PBXProject "SalahShield" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 9AB440A12EB5C8320096CBFE;
+			mainGroup = 9A47209F2EB5CADA00F60206;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 9AB440AB2EB5C8320096CBFE /* Products */;
+			productRefGroup = 9A4720A92EB5CADA00F60206 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9AB440A92EB5C8320096CBFE /* SalahSheild */,
+				9A4720A72EB5CADA00F60206 /* SalahShield */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		9AB440A82EB5C8320096CBFE /* Resources */ = {
+		9A4720A62EB5CADA00F60206 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -115,7 +115,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		9AB440A62EB5C8320096CBFE /* Sources */ = {
+		9A4720A42EB5CADA00F60206 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -125,7 +125,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		9AB440B82EB5C8340096CBFE /* Debug */ = {
+		9A4720B62EB5CADB00F60206 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -160,6 +160,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = P7MM2B3QZZ;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -188,7 +189,7 @@
 			};
 			name = Debug;
 		};
-		9AB440B92EB5C8340096CBFE /* Release */ = {
+		9A4720B72EB5CADB00F60206 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -223,6 +224,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = P7MM2B3QZZ;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -244,13 +246,14 @@
 			};
 			name = Release;
 		};
-		9AB440BB2EB5C8340096CBFE /* Debug */ = {
+		9A4720B92EB5CADB00F60206 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P7MM2B3QZZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -263,7 +266,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "A-Z-apps.SalahSheild";
+				PRODUCT_BUNDLE_IDENTIFIER = "A-Z-apps.SalahShield";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -271,13 +274,14 @@
 			};
 			name = Debug;
 		};
-		9AB440BC2EB5C8340096CBFE /* Release */ = {
+		9A4720BA2EB5CADB00F60206 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = P7MM2B3QZZ;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -290,7 +294,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "A-Z-apps.SalahSheild";
+				PRODUCT_BUNDLE_IDENTIFIER = "A-Z-apps.SalahShield";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -301,25 +305,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9AB440A52EB5C8320096CBFE /* Build configuration list for PBXProject "SalahSheild" */ = {
+		9A4720A32EB5CADA00F60206 /* Build configuration list for PBXProject "SalahShield" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9AB440B82EB5C8340096CBFE /* Debug */,
-				9AB440B92EB5C8340096CBFE /* Release */,
+				9A4720B62EB5CADB00F60206 /* Debug */,
+				9A4720B72EB5CADB00F60206 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9AB440BA2EB5C8340096CBFE /* Build configuration list for PBXNativeTarget "SalahSheild" */ = {
+		9A4720B82EB5CADB00F60206 /* Build configuration list for PBXNativeTarget "SalahShield" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9AB440BB2EB5C8340096CBFE /* Debug */,
-				9AB440BC2EB5C8340096CBFE /* Release */,
+				9A4720B92EB5CADB00F60206 /* Debug */,
+				9A4720BA2EB5CADB00F60206 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 9AB440A22EB5C8320096CBFE /* Project object */;
+	rootObject = 9A4720A02EB5CADA00F60206 /* Project object */;
 }

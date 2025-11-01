@@ -1,6 +1,6 @@
 //
 //  Persistence.swift
-//  SalahSheild
+//  SalahShield
 //
 //  Created by Zahin M on 2025-11-01.
 //
@@ -32,7 +32,7 @@ struct PersistenceController {
     let container: NSPersistentContainer
 
     init(inMemory: Bool = false) {
-        container = NSPersistentContainer(name: "SalahSheild")
+        container = NSPersistentContainer(name: "SalahShield")
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
