@@ -2,7 +2,7 @@
 //  Blocklist.swift
 //  SalahShield
 //
-//  Created on November 1, 2025.
+//  Created by Zahin M on 2025-11-01.
 //
 
 import Foundation
@@ -14,7 +14,11 @@ struct Blocklist: Identifiable, Codable {
     var websites: [BlockedWebsite]
     var categories: [AppCategory]
     var lastUpdated: Date
-    var isPro: Bool
+    
+    // MARK: - Future Premium Feature
+    // TODO: Implement premium blocklists after core functionality is complete
+    // var isPro: Bool
+    
     var isDefault: Bool
     
     init(
@@ -24,7 +28,7 @@ struct Blocklist: Identifiable, Codable {
         websites: [BlockedWebsite] = [],
         categories: [AppCategory] = [],
         lastUpdated: Date = Date(),
-        isPro: Bool = false,
+        // isPro: Bool = false, // FUTURE: Premium blocklists feature
         isDefault: Bool = false
     ) {
         self.id = id
@@ -33,7 +37,7 @@ struct Blocklist: Identifiable, Codable {
         self.websites = websites
         self.categories = categories
         self.lastUpdated = lastUpdated
-        self.isPro = isPro
+        // self.isPro = isPro // FUTURE: Premium blocklists feature
         self.isDefault = isDefault
     }
     

@@ -2,7 +2,7 @@
 //  SSButton.swift
 //  SalahShield
 //
-//  Created on November 1, 2025.
+//  Created by Zahin M on 2025-11-01.
 //
 
 import SwiftUI
@@ -79,7 +79,7 @@ struct SSButton: View {
         
         var shadowColor: Color {
             switch self {
-            case .primary, .destructive: return DesignSystem.Shadow.medium
+            case .primary, .destructive: return Color.black.opacity(0.12)
             default: return .clear
             }
         }
@@ -122,4 +122,39 @@ struct SSButton: View {
             }
         }
     }
+}
+
+enum SSButtonStyle {
+    case primary
+    case secondary
+    case destructive
+    
+    var backgroundColor: Color {
+        switch self {
+        case .primary:
+            return DesignSystem.Colors.accentColor
+        case .secondary:
+            return DesignSystem.Colors.secondaryBackground
+        case .destructive:
+            return DesignSystem.Colors.error
+        }
+    }
+    
+    var foregroundColor: Color {
+        switch self {
+        case .primary, .destructive:
+            return .white
+        case .secondary:
+            return DesignSystem.Colors.primaryText
+        }
+    }
+}
+
+#Preview {
+    VStack(spacing: DesignSystem.Spacing.md) {
+        SSButton("Continue", style: .primary, action: {})
+        SSButton("Skip", style: .secondary, action: {})
+        SSButton("Delete", style: .destructive, action: {})
+    }
+    .padding()
 }

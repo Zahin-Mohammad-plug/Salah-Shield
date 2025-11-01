@@ -2,7 +2,7 @@
 //  HomeView.swift
 //  SalahShield
 //
-//  Created on November 1, 2025.
+//  Created by Zahin M on 2025-11-01.
 //
 
 import SwiftUI
@@ -10,17 +10,13 @@ import SwiftUI
 /// Home screen showing next prayer and today's schedule
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
-    @State private var showPaywall = false
+    // @State private var showPaywall = false // FUTURE: Premium feature paywall
     @State private var showLocationBanner = false
     
-    // Mock data - replace with real prayer times
-    @State private var todaysPrayers: [Prayer] = [
-        Prayer(type: .fajr, time: Calendar.current.date(bySettingHour: 5, minute: 30, second: 0, of: Date())!),
-        Prayer(type: .dhuhr, time: Calendar.current.date(bySettingHour: 12, minute: 45, second: 0, of: Date())!),
-        Prayer(type: .asr, time: Calendar.current.date(bySettingHour: 15, minute: 30, second: 0, of: Date())!),
-        Prayer(type: .maghrib, time: Calendar.current.date(bySettingHour: 17, minute: 45, second: 0, of: Date())!),
-        Prayer(type: .isha, time: Calendar.current.date(bySettingHour: 19, minute: 15, second: 0, of: Date())!)
-    ]
+    // Real prayer times from service
+    private var todaysPrayers: [Prayer] {
+        appState.prayerTimeService.todaysPrayers
+    }
     
     var body: some View {
         NavigationView {
@@ -32,7 +28,41 @@ struct HomeView: View {
                             message: "Location access required for accurate prayer times",
                             type: .warning,
                             action: {
-                                // Open settings
+                                appState.requestLocationAccess()
+                            }
+                        )
+                        .padding(.horizontal, DesignSystem.Spacing.md)
+                    } else if appState.locationPermissionStatus == .notDetermined {
+                        SSBanner(
+                            message: "Enable location for automatic prayer times",
+                            type: .info,
+                            action: {
+                                appState.requestLocationAccess()
+                            }
+                        )
+                        .padding(.horizontal, DesignSystem.Spacing.md)
+                    }
+                    
+                    // Loading banner when calculating prayer times
+                    if appState.prayerTimeService.isCalculating {
+                        SSBanner(
+                            message: "Calculating prayer times...",
+                            type: .info,
+                            action: nil
+                        )
+                        .padding(.horizontal, DesignSystem.Spacing.md)
+                    }
+                    
+                    // Error banner if calculation failed
+                    if let error = appState.prayerTimeService.calculationError {
+                        SSBanner(
+                            message: error,
+                            type: .warning,
+                            action: {
+                                // Retry calculation
+                                if let location = appState.locationService.currentLocation {
+                                    appState.prayerTimeService.calculatePrayerTimes(for: location, method: appState.calculationMethod)
+                                }
                             }
                         )
                         .padding(.horizontal, DesignSystem.Spacing.md)
@@ -89,15 +119,15 @@ struct HomeView: View {
             .background(DesignSystem.Colors.background)
             .navigationTitle("Salah Shield")
             .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showPaywall) {
-                PaywallView()
-            }
+            // FUTURE: Premium feature paywall
+            // .sheet(isPresented: $showPaywall) {
+            //     PaywallView()
+            // }
         }
     }
     
     private var nextPrayer: Prayer? {
-        let now = Date()
-        return todaysPrayers.first(where: { $0.time > now })
+        return appState.prayerTimeService.nextPrayer
     }
 }
 

@@ -2,23 +2,22 @@
 //  ScheduleView.swift
 //  SalahShield
 //
-//  Created on November 1, 2025.
+//  Created by Zahin M on 2025-11-01.
 //
 
 import SwiftUI
 
 /// Schedule view showing prayer windows with customization
 struct ScheduleView: View {
+    @EnvironmentObject var appState: AppState
     @State private var selectedPeriod: TimePeriod = .today
-    @State private var prayers: [Prayer] = [
-        Prayer(type: .fajr, time: Calendar.current.date(bySettingHour: 5, minute: 30, second: 0, of: Date())!),
-        Prayer(type: .dhuhr, time: Calendar.current.date(bySettingHour: 12, minute: 45, second: 0, of: Date())!),
-        Prayer(type: .asr, time: Calendar.current.date(bySettingHour: 15, minute: 30, second: 0, of: Date())!),
-        Prayer(type: .maghrib, time: Calendar.current.date(bySettingHour: 17, minute: 45, second: 0, of: Date())!),
-        Prayer(type: .isha, time: Calendar.current.date(bySettingHour: 19, minute: 15, second: 0, of: Date())!)
-    ]
     @State private var selectedPrayer: Prayer?
+    @State private var editingPrayer: Prayer?
     @State private var showBufferEditor = false
+    
+    private var prayers: [Prayer] {
+        appState.prayerTimeService.todaysPrayers
+    }
     
     var body: some View {
         NavigationView {
@@ -41,6 +40,7 @@ struct ScheduleView: View {
                                 prayer: prayer,
                                 onTap: {
                                     selectedPrayer = prayer
+                                    editingPrayer = prayer
                                     showBufferEditor = true
                                 }
                             )
@@ -54,10 +54,17 @@ struct ScheduleView: View {
             .navigationTitle("Schedule")
             .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $showBufferEditor) {
-                if let prayer = selectedPrayer {
+                if let prayer = editingPrayer {
                     BufferEditorSheet(
-                        prayer: binding(for: prayer),
+                        prayer: Binding(
+                            get: { prayer },
+                            set: { newValue in editingPrayer = newValue }
+                        ),
                         onSave: {
+                            if let updatedPrayer = editingPrayer,
+                               let index = appState.prayerTimeService.todaysPrayers.firstIndex(where: { $0.id == updatedPrayer.id }) {
+                                appState.prayerTimeService.todaysPrayers[index] = updatedPrayer
+                            }
                             showBufferEditor = false
                         }
                     )
@@ -66,12 +73,7 @@ struct ScheduleView: View {
         }
     }
     
-    private func binding(for prayer: Prayer) -> Binding<Prayer> {
-        guard let index = prayers.firstIndex(where: { $0.id == prayer.id }) else {
-            return .constant(prayer)
-        }
-        return $prayers[index]
-    }
+
 }
 
 struct PrayerScheduleCard: View {

@@ -2,15 +2,52 @@
 //  DesignSystem.swift
 //  SalahShield
 //
-//  Created on November 1, 2025.
+//  Created by Zahin M on 2025-11-01.
 //
 
 import SwiftUI
 
-/// Design system constants and tokens
-enum DesignSystem {
+struct DesignSystem {
+    // MARK: - Colors
+    struct Colors {
+        // Primary
+        static let primary = Color("Primary", bundle: nil)
+        static let primaryLight = Color("PrimaryLight", bundle: nil)
+        static let primaryDark = Color("PrimaryDark", bundle: nil)
+        
+        // Background
+        static let background = Color("Background", bundle: nil)
+        static let secondaryBackground = Color("SecondaryBackground", bundle: nil)
+        static let cardBackground = Color("CardBackground", bundle: nil)
+        
+        // Text
+        static let primaryText = Color.primary
+        static let secondaryText = Color.secondary
+        static let tertiaryText = Color.gray
+        
+        // Status
+        static let active = Color.green
+        static let inactive = Color.gray
+        static let warning = Color.orange
+        static let error = Color.red
+        
+        // Fallback colors for when custom colors aren't defined
+        static let accentColor = Color.accentColor
+    }
+    
+    // MARK: - Typography
+    struct Typography {
+        static let largeTitle = Font.largeTitle.weight(.bold)
+        static let title = Font.title2.weight(.semibold)
+        static let headline = Font.headline.weight(.semibold)
+        static let body = Font.body
+        static let bodyBold = Font.body.weight(.semibold)
+        static let caption = Font.caption
+        static let caption2 = Font.caption2
+    }
+    
     // MARK: - Spacing
-    enum Spacing {
+    struct Spacing {
         static let xs: CGFloat = 4
         static let sm: CGFloat = 8
         static let md: CGFloat = 16
@@ -20,37 +57,23 @@ enum DesignSystem {
     }
     
     // MARK: - Corner Radius
-    enum CornerRadius {
+    struct CornerRadius {
         static let sm: CGFloat = 8
         static let md: CGFloat = 12
         static let lg: CGFloat = 16
-        static let xl: CGFloat = 24
-    }
-    
-    // MARK: - Font Sizes
-    enum FontSize {
-        static let caption: CGFloat = 12
-        static let body: CGFloat = 16
-        static let title3: CGFloat = 20
-        static let title2: CGFloat = 24
-        static let title1: CGFloat = 32
-        static let large: CGFloat = 40
-    }
-    
-    // MARK: - Colors
-    enum Colors {
-        static let primary = Color("PrimaryColor", bundle: nil)
-        static let secondary = Color("SecondaryColor", bundle: nil)
-        static let accent = Color.accentColor
-        static let background = Color(uiColor: .systemBackground)
-        static let secondaryBackground = Color(uiColor: .secondarySystemBackground)
-        static let tertiaryBackground = Color(uiColor: .tertiarySystemBackground)
+        static let xl: CGFloat = 20
     }
     
     // MARK: - Shadows
-    enum Shadow {
-        static let light = Color.black.opacity(0.05)
-        static let medium = Color.black.opacity(0.1)
-        static let heavy = Color.black.opacity(0.2)
+    struct Shadows {
+        static let card = Shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 2)
+        static let button = Shadow(color: .black.opacity(0.12), radius: 4, x: 0, y: 2)
+    }
+    
+    struct Shadow {
+        let color: Color
+        let radius: CGFloat
+        let x: CGFloat
+        let y: CGFloat
     }
 }

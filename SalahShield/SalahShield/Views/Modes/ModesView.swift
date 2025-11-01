@@ -2,19 +2,36 @@
 //  ModesView.swift
 //  SalahShield
 //
-//  Created on November 1, 2025.
+//  Created by Zahin M on 2025-11-01.
 //
 
 import SwiftUI
 
 /// Special modes for Jumu'ah and Ramadan
 struct ModesView: View {
-    @State private var jumuahEnabled = false
-    @State private var ramadanEnabled = false
-    @State private var showPaywall = false
+    // MARK: - Future Premium Features
+    // TODO: Implement Jumu'ah and Ramadan modes after core functionality is complete
+    // These will be premium features requiring Pro subscription
+    
+    // @State private var jumuahEnabled = false
+    // @State private var ramadanEnabled = false
+    // @State private var showPaywall = false
     
     var body: some View {
         NavigationView {
+            // FUTURE: Special modes will be implemented as premium features
+            // For now, show a placeholder explaining these are coming soon
+            SSEmptyState(
+                icon: "sparkles",
+                title: "Special Modes Coming Soon",
+                message: "Jumu'ah and Ramadan modes with enhanced features will be available in a future update",
+                actionTitle: nil,
+                action: nil
+            )
+            .navigationTitle("Modes")
+            .navigationBarTitleDisplayMode(.large)
+            
+            /* FUTURE PREMIUM IMPLEMENTATION:
             ScrollView {
                 VStack(spacing: DesignSystem.Spacing.lg) {
                     // Header
@@ -29,93 +46,23 @@ struct ModesView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, DesignSystem.Spacing.md)
                     
-                    // Jumu'ah Mode
-                    ModeCard(
-                        icon: "mosque.fill",
-                        iconColor: .blue,
-                        title: "Jumu'ah Mode",
-                        description: "Extended Friday prayer window with enhanced blocking",
-                        isEnabled: jumuahEnabled,
-                        isPro: true,
-                        details: [
-                            "Extended prayer window (60 minutes)",
-                            "Stricter app blocking",
-                            "Special notification tone",
-                            "Auto-activates on Fridays"
-                        ],
-                        onToggle: { enabled in
-                            if enabled {
-                                showPaywall = true
-                            } else {
-                                jumuahEnabled = false
-                            }
-                        }
-                    )
-                    .padding(.horizontal, DesignSystem.Spacing.md)
-                    
-                    // Ramadan Mode
-                    ModeCard(
-                        icon: "moon.stars.fill",
-                        iconColor: .purple,
-                        title: "Ramadan Mode",
-                        description: "Enhanced focus during the blessed month",
-                        isEnabled: ramadanEnabled,
-                        isPro: true,
-                        details: [
-                            "Includes Taraweeh prayer times",
-                            "Suhoor & Iftar reminders",
-                            "Enhanced Qur'an reading time",
-                            "Special night prayer windows"
-                        ],
-                        onToggle: { enabled in
-                            if enabled {
-                                showPaywall = true
-                            } else {
-                                ramadanEnabled = false
-                            }
-                        }
-                    )
-                    .padding(.horizontal, DesignSystem.Spacing.md)
-                    
+                    // Jumu'ah Mode Card
+                    // Ramadan Mode Card
                     // Pro Banner
-                    SSCard {
-                        HStack(spacing: DesignSystem.Spacing.md) {
-                            Image(systemName: "crown.fill")
-                                .font(.system(size: 32))
-                                .foregroundColor(.yellow)
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Unlock Special Modes")
-                                    .font(.system(size: 16, weight: .semibold))
-                                
-                                Text("Upgrade to Pro for Jumu'ah and Ramadan presets")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.secondary)
-                            }
-                            
-                            Spacer()
-                            
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    .padding(.horizontal, DesignSystem.Spacing.md)
-                    .onTapGesture {
-                        showPaywall = true
-                    }
                 }
                 .padding(.vertical, DesignSystem.Spacing.lg)
             }
             .background(DesignSystem.Colors.background)
-            .navigationTitle("Modes")
-            .navigationBarTitleDisplayMode(.large)
             .sheet(isPresented: $showPaywall) {
                 PaywallView()
             }
+            */
         }
     }
 }
 
+/* FUTURE PREMIUM FEATURE: ModeCard Component
+// This component will be used for Jumu'ah and Ramadan mode toggles
 struct ModeCard: View {
     let icon: String
     let iconColor: Color
@@ -182,3 +129,4 @@ struct ModeCard: View {
         }
     }
 }
+*/

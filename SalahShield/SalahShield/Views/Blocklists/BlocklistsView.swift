@@ -2,7 +2,7 @@
 //  BlocklistsView.swift
 //  SalahShield
 //
-//  Created on November 1, 2025.
+//  Created by Zahin M on 2025-11-01.
 //
 
 import SwiftUI
@@ -11,10 +11,10 @@ import SwiftUI
 struct BlocklistsView: View {
     @State private var blocklists: [Blocklist] = [
         Blocklist(name: "Default", isDefault: true),
-        Blocklist(name: "Social Media", isPro: false),
+        Blocklist(name: "Social Media", isDefault: false),
     ]
     @State private var showAddBlocklist = false
-    @State private var showPaywall = false
+    // @State private var showPaywall = false // FUTURE: Premium feature paywall
     @State private var selectedBlocklist: Blocklist?
     
     var body: some View {
@@ -33,15 +33,13 @@ struct BlocklistsView: View {
                 } else {
                     ScrollView {
                         VStack(spacing: DesignSystem.Spacing.md) {
-                            // Free tier info
-                            SSBanner(
-                                message: "You have 1 free blocklist. Upgrade to Pro for unlimited blocklists.",
-                                type: .info,
-                                action: {
-                                    showPaywall = true
-                                }
-                            )
-                            .padding(.horizontal, DesignSystem.Spacing.md)
+                            // FUTURE: Premium feature - limit to 1 free blocklist
+                            // SSBanner(
+                            //     message: "You have 1 free blocklist. Upgrade to Pro for unlimited blocklists.",
+                            //     type: .info,
+                            //     action: { showPaywall = true }
+                            // )
+                            // .padding(.horizontal, DesignSystem.Spacing.md)
                             
                             ForEach(blocklists) { blocklist in
                                 BlocklistCard(
@@ -63,11 +61,13 @@ struct BlocklistsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        if freeBlocklistsRemaining > 0 {
-                            showAddBlocklist = true
-                        } else {
-                            showPaywall = true
-                        }
+                        // FUTURE: Restrict to 1 free blocklist, require Pro for more
+                        // if freeBlocklistsRemaining > 0 {
+                        //     showAddBlocklist = true
+                        // } else {
+                        //     showPaywall = true
+                        // }
+                        showAddBlocklist = true
                     }) {
                         Image(systemName: "plus")
                     }
@@ -82,16 +82,18 @@ struct BlocklistsView: View {
             .sheet(item: $selectedBlocklist) { blocklist in
                 BlocklistDetailView(blocklist: binding(for: blocklist))
             }
-            .sheet(isPresented: $showPaywall) {
-                PaywallView()
-            }
+            // FUTURE: Premium feature paywall
+            // .sheet(isPresented: $showPaywall) {
+            //     PaywallView()
+            // }
         }
     }
     
-    private var freeBlocklistsRemaining: Int {
-        let freeCount = blocklists.filter { !$0.isPro }.count
-        return max(0, 1 - freeCount)
-    }
+    // FUTURE: Track free blocklist limit for premium upsell
+    // private var freeBlocklistsRemaining: Int {
+    //     let freeCount = blocklists.filter { !$0.isPro }.count
+    //     return max(0, 1 - freeCount)
+    // }
     
     private func binding(for blocklist: Blocklist) -> Binding<Blocklist> {
         guard let index = blocklists.firstIndex(where: { $0.id == blocklist.id }) else {
@@ -129,15 +131,16 @@ struct BlocklistCard: View {
                                         .cornerRadius(4)
                                 }
                                 
-                                if blocklist.isPro {
-                                    Text("PRO")
-                                        .font(.system(size: 10, weight: .bold))
-                                        .foregroundColor(.white)
-                                        .padding(.horizontal, 6)
-                                        .padding(.vertical, 2)
-                                        .background(Color.purple)
-                                        .cornerRadius(4)
-                                }
+                                // FUTURE: Show PRO badge for premium blocklists
+                                // if blocklist.isPro {
+                                //     Text("PRO")
+                                //         .font(.system(size: 10, weight: .bold))
+                                //         .foregroundColor(.white)
+                                //         .padding(.horizontal, 6)
+                                //         .padding(.vertical, 2)
+                                //         .background(Color.purple)
+                                //         .cornerRadius(4)
+                                // }
                             }
                             
                             Text("\(blocklist.itemCount) items")

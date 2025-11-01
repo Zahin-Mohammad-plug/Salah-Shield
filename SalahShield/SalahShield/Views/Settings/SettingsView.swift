@@ -2,7 +2,7 @@
 //  SettingsView.swift
 //  SalahShield
 //
-//  Created on November 1, 2025.
+//  Created by Zahin M on 2025-11-01.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var showPaywall = false
+    // @State private var showPaywall = false // FUTURE: Premium feature paywall
     @State private var showAbout = false
     
     var body: some View {
@@ -32,12 +32,22 @@ struct SettingsView: View {
                     } else {
                         SSListRow(
                             title: "Use Current Location",
-                            subtitle: locationStatusText,
+                            subtitle: appState.locationPermissionStatus.displayText,
                             icon: "location.fill",
                             accessory: .chevron,
                             action: {
-                                // Request location
+                                appState.requestLocationAccess()
                             }
+                        )
+                    }
+                    
+                    // Show location error if any
+                    if let locationError = appState.locationService.locationError {
+                        SSListRow(
+                            title: "Location Error",
+                            subtitle: locationError,
+                            icon: "exclamationmark.triangle.fill",
+                            iconColor: .red
                         )
                     }
                     
@@ -81,27 +91,25 @@ struct SettingsView: View {
                     .pickerStyle(SegmentedPickerStyle())
                 }
                 
+                // MARK: - Future Premium Features
+                // TODO: Implement after core functionality is complete
                 // Account Section
-                Section(header: Text("Account")) {
-                    SSListRow(
-                        title: "Upgrade to Pro",
-                        subtitle: "Unlock all features",
-                        icon: "crown.fill",
-                        iconColor: .yellow,
-                        accessory: .chevron,
-                        action: {
-                            showPaywall = true
-                        }
-                    )
-                    
-                    SSListRow(
-                        title: "Restore Purchases",
-                        icon: "arrow.clockwise",
-                        action: {
-                            // Restore purchases
-                        }
-                    )
-                }
+                // Section(header: Text("Account")) {
+                //     SSListRow(
+                //         title: "Upgrade to Pro",
+                //         subtitle: "Unlock all features",
+                //         icon: "crown.fill",
+                //         iconColor: .yellow,
+                //         accessory: .chevron,
+                //         action: { showPaywall = true }
+                //     )
+                //     
+                //     SSListRow(
+                //         title: "Restore Purchases",
+                //         icon: "arrow.clockwise",
+                //         action: { /* Restore purchases */ }
+                //     )
+                // }
                 
                 // Support Section
                 Section(header: Text("Support")) {
@@ -175,20 +183,12 @@ struct SettingsView: View {
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showPaywall) {
-                PaywallView()
-            }
+            // FUTURE: Premium feature paywall
+            // .sheet(isPresented: $showPaywall) {
+            //     PaywallView()
+            // }
         }
     }
     
-    private var locationStatusText: String {
-        switch appState.locationPermissionStatus {
-        case .notDetermined:
-            return "Not set"
-        case .authorized:
-            return "Enabled"
-        case .denied:
-            return "Denied - Tap to enable"
-        }
-    }
+
 }

@@ -2,12 +2,22 @@
 //  PaywallView.swift
 //  SalahShield
 //
-//  Created on November 1, 2025.
+//  Created by Zahin M on 2025-11-01.
 //
 
 import SwiftUI
 
-/// Paywall screen for Pro upgrade
+// MARK: - FUTURE PREMIUM FEATURE
+// TODO: This entire paywall system will be implemented after core functionality is complete
+// Premium features planned:
+// - Unlimited blocklists (vs 1 free)
+// - Per-prayer custom buffers
+// - Ramadan mode with Taraweeh
+// - Jumu'ah mode with auto-activation
+// - Travel mode with auto prayer time updates
+// - Priority support
+
+/// Paywall screen for Pro upgrade (FUTURE IMPLEMENTATION)
 struct PaywallView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var selectedPlan: SubscriptionPlan = .annual

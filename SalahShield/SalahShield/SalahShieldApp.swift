@@ -2,7 +2,7 @@
 //  SalahShieldApp.swift
 //  SalahShield
 //
-//  Created on November 1, 2025.
+//  Created by Zahin M on 2025-11-01.
 //
 
 import SwiftUI
@@ -14,10 +14,17 @@ struct SalahShieldApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(appState)
-                .environmentObject(themeManager)
-                .preferredColorScheme(themeManager.colorScheme)
+            if appState.hasCompletedOnboarding {
+                MainTabView()
+                    .environmentObject(appState)
+                    .environmentObject(themeManager)
+                    .preferredColorScheme(themeManager.colorScheme)
+            } else {
+                OnboardingCoordinator()
+                    .environmentObject(appState)
+                    .environmentObject(themeManager)
+                    .preferredColorScheme(themeManager.colorScheme)
+            }
         }
     }
 }
