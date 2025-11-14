@@ -53,19 +53,26 @@ struct ScheduleView: View {
             .background(DesignSystem.Colors.background)
             .navigationTitle("Schedule")
             .navigationBarTitleDisplayMode(.large)
+            .environment(\.timeZone, .autoupdatingCurrent)
             .sheet(isPresented: $showBufferEditor) {
                 if let prayer = editingPrayer {
                     BufferEditorSheet(
                         prayer: Binding(
-                            get: { prayer },
+                            get: { editingPrayer ?? prayer },
                             set: { newValue in editingPrayer = newValue }
                         ),
                         onSave: {
                             if let updatedPrayer = editingPrayer,
                                let index = appState.prayerTimeService.todaysPrayers.firstIndex(where: { $0.id == updatedPrayer.id }) {
-                                appState.prayerTimeService.todaysPrayers[index] = updatedPrayer
+                                // Create a new array to trigger SwiftUI update
+                                var updatedPrayers = appState.prayerTimeService.todaysPrayers
+                                updatedPrayers[index] = updatedPrayer
+                                appState.prayerTimeService.todaysPrayers = updatedPrayers
+                                // Update next prayer in case the changed prayer affects it
+                                appState.prayerTimeService.updateNextPrayer()
                             }
                             showBufferEditor = false
+                            editingPrayer = nil
                         }
                     )
                 }

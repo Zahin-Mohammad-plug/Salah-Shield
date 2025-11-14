@@ -5,6 +5,10 @@
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>SalahShield needs your location to calculate accurate prayer times based on your geographic position.</string>
+	<string>SalahShield needs your location to calculate accurate prayer times and Qibla direction based on your geographic position.</string>
+	<key>NSFamilyControls</key>
+	<true/>
+	<key>NSFamilyControlsUsageDescription</key>
+	<string>SalahShield uses Screen Time to temporarily block distracting apps and websites during prayer times, helping you stay focused on worship.</string>
 </dict>
 </plist>

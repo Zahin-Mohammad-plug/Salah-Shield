@@ -10,8 +10,7 @@ import SwiftUI
 /// Home screen showing next prayer and today's schedule
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
-    // @State private var showPaywall = false // FUTURE: Premium feature paywall
-    @State private var showLocationBanner = false
+    @State private var showPaywall = false
     
     // Real prayer times from service
     private var todaysPrayers: [Prayer] {
@@ -91,8 +90,64 @@ struct HomeView: View {
                                 )
                             }
                         }
+                        
+                        // Enable/Disable Blocking Toggle
+                        SSCard(padding: DesignSystem.Spacing.md) {
+                            HStack {
+                                Image(systemName: "shield.fill")
+                                    .foregroundColor(.accentColor)
+                                    .font(.system(size: 20))
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("App Blocking")
+                                        .font(.system(size: 16, weight: .semibold))
+                                    
+                                    Text(appState.isActive ? "Active during prayer windows" : "Tap to enable blocking")
+                                        .font(.system(size: 13))
+                                        .foregroundColor(.secondary)
+                                }
+                                
+                                Spacer()
+                                
+                                Toggle("", isOn: $appState.isActive)
+                            }
+                        }
+                        
+                        // Screen Time Authorization Banner
+                        if appState.screenTimeService.authorizationStatus != .approved {
+                            SSBanner(
+                                message: "Screen Time authorization required for app blocking",
+                                type: .warning,
+                                action: {
+                                    Task {
+                                        appState.screenTimeService.requestAuthorization()
+                                    }
+                                }
+                            )
+                        }
                     }
                     .padding(.horizontal, DesignSystem.Spacing.md)
+                    
+                    // Qibla Direction Card
+                    if let qiblaAngle = appState.qiblaService.qiblaAngle {
+                        QiblaCompassCard(
+                            angle: qiblaAngle,
+                            direction: appState.qiblaService.formattedDirection,
+                            heading: appState.qiblaService.heading
+                        )
+                        .padding(.horizontal, DesignSystem.Spacing.md)
+                    } else if appState.locationService.currentLocation != nil {
+                        // Show loading state if location exists but qibla not calculated yet
+                        SSCard(padding: DesignSystem.Spacing.lg) {
+                            HStack {
+                                ProgressView()
+                                Text("Calculating Qibla...")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .padding(.horizontal, DesignSystem.Spacing.md)
+                    }
                     
                     // Next Prayer Card
                     if let nextPrayer = nextPrayer {
@@ -119,10 +174,10 @@ struct HomeView: View {
             .background(DesignSystem.Colors.background)
             .navigationTitle("Salah Shield")
             .navigationBarTitleDisplayMode(.large)
-            // FUTURE: Premium feature paywall
-            // .sheet(isPresented: $showPaywall) {
-            //     PaywallView()
-            // }
+            .environment(\.timeZone, .autoupdatingCurrent)
+            .sheet(isPresented: $showPaywall) {
+                PaywallView()
+            }
         }
     }
     
@@ -176,9 +231,26 @@ struct NextPrayerCard: View {
     }
     
     private func timeUntil(_ date: Date) -> String {
-        let components = Calendar.current.dateComponents([.hour, .minute], from: Date(), to: date)
-        let hours = components.hour ?? 0
-        let minutes = components.minute ?? 0
+        let now = Date()
+        let components = Calendar.current.dateComponents([.hour, .minute], from: now, to: date)
+        var hours = components.hour ?? 0
+        var minutes = components.minute ?? 0
+        
+        // Handle negative time (prayer already passed)
+        if date < now {
+            // Calculate time until next occurrence (tomorrow)
+            if let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: date) {
+                let tomorrowComponents = Calendar.current.dateComponents([.hour, .minute], from: now, to: tomorrow)
+                hours = tomorrowComponents.hour ?? 0
+                minutes = tomorrowComponents.minute ?? 0
+            } else {
+                return "0m"
+            }
+        }
+        
+        // Ensure non-negative
+        hours = max(0, hours)
+        minutes = max(0, minutes)
         
         if hours > 0 {
             return "\(hours)h \(minutes)m"
@@ -231,5 +303,103 @@ struct QuickActionButton: View {
                 .background(DesignSystem.Colors.secondaryBackground)
                 .cornerRadius(10)
         }
+    }
+}
+
+struct QiblaCompassCard: View {
+    let angle: Double // Angle in degrees (0 = North, 90 = East) - relative to device orientation
+    let direction: String
+    let heading: Double? // Device heading for display
+    
+    var body: some View {
+        SSCard(padding: DesignSystem.Spacing.lg) {
+            VStack(spacing: DesignSystem.Spacing.md) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Qibla Direction")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.secondary)
+                        
+                        if let heading = heading {
+                            Text("Device: \(formatHeading(heading))")
+                                .font(.system(size: 11))
+                                .foregroundColor(.secondary.opacity(0.7))
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    VStack(alignment: .trailing, spacing: 4) {
+                        Text(direction)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(.accentColor)
+                        
+                        if let qibla = heading != nil ? angle : nil {
+                            Text("\(Int(qibla))°")
+                                .font(.system(size: 11))
+                                .foregroundColor(.secondary.opacity(0.7))
+                        }
+                    }
+                }
+                
+                // Compass
+                ZStack {
+                    // Background circle
+                    Circle()
+                        .fill(DesignSystem.Colors.secondaryBackground)
+                        .frame(width: 200, height: 200)
+                        .overlay(
+                            Circle()
+                                .stroke(Color.secondary.opacity(0.3), lineWidth: 2)
+                        )
+                    
+                    // Cardinal directions
+                    VStack {
+                        Text("N")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(.red)
+                        Spacer()
+                        Text("S")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(height: 200)
+                    
+                    HStack {
+                        Text("W")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("E")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(width: 200)
+                    
+                    // Qibla arrow - points to Qibla direction
+                    // This rotates based on device orientation relative to Qibla
+                    Image(systemName: "location.north.fill")
+                        .font(.system(size: 50))
+                        .foregroundColor(.accentColor)
+                        .offset(y: -70)
+                        .rotationEffect(.degrees(angle))
+                        .shadow(color: .accentColor.opacity(0.3), radius: 5, x: 0, y: 2)
+                }
+                .frame(height: 200)
+                
+                // Instructions
+                Text("Point your device toward the arrow to face Qibla")
+                    .font(.system(size: 12))
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+        }
+    }
+    
+    private func formatHeading(_ heading: Double) -> String {
+        let directions = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+                         "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+        let index = Int((heading + 11.25) / 22.5) % 16
+        return directions[index]
     }
 }

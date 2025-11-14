@@ -6,19 +6,20 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct DesignSystem {
     // MARK: - Colors
     struct Colors {
-        // Primary
+        // Primary - using system accent color as fallback
         static let primary = Color("Primary", bundle: nil)
         static let primaryLight = Color("PrimaryLight", bundle: nil)
         static let primaryDark = Color("PrimaryDark", bundle: nil)
         
-        // Background
-        static let background = Color("Background", bundle: nil)
-        static let secondaryBackground = Color("SecondaryBackground", bundle: nil)
-        static let cardBackground = Color("CardBackground", bundle: nil)
+        // Background - using system colors as fallback for missing assets
+        static let background = Color(uiColor: .systemBackground)
+        static let secondaryBackground = Color(uiColor: .secondarySystemBackground)
+        static let cardBackground = Color(uiColor: .tertiarySystemBackground)
         
         // Text
         static let primaryText = Color.primary

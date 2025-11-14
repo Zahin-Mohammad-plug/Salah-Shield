@@ -13,7 +13,6 @@ struct LocationSetupView: View {
     @State private var selectedCity: String = ""
     @State private var searchText: String = ""
     @State private var useLocation: Bool = true
-    @State private var showLocationError: Bool = false
     
     let onContinue: () -> Void
     
@@ -112,6 +111,10 @@ struct LocationSetupView: View {
                                 CityRow(name: "Toronto, Canada", isSelected: selectedCity == "Toronto") {
                                     selectedCity = "Toronto"
                                     appState.setManualCity("Toronto, Canada", latitude: 43.6532, longitude: -79.3832)
+                                }
+                                CityRow(name: "Ottawa, Canada", isSelected: selectedCity == "Ottawa") {
+                                    selectedCity = "Ottawa"
+                                    appState.setManualCity("Ottawa, Canada", latitude: 45.4215, longitude: -75.6972)
                                 }
                                 CityRow(name: "Makkah, Saudi Arabia", isSelected: selectedCity == "Makkah") {
                                     selectedCity = "Makkah"

@@ -10,12 +10,30 @@ import CoreLocation
 import Combine
 import UIKit
 
+// MARK: - Heading Updates for Qibla Compass
+extension LocationService {
+    func startHeadingUpdates() {
+        guard CLLocationManager.headingAvailable() else {
+            print("⚠️ Compass not available on this device")
+            return
+        }
+        locationManager.headingFilter = 5.0 // Update every 5 degrees for smoother performance
+        locationManager.startUpdatingHeading()
+        print("🧭 Started heading updates for Qibla compass")
+    }
+    
+    func stopHeadingUpdates() {
+        locationManager.stopUpdatingHeading()
+    }
+}
+
 /// Service for managing location permissions and coordinates
 class LocationService: NSObject, ObservableObject {
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
     @Published var currentLocation: CLLocation?
     @Published var currentCity: String?
     @Published var locationError: String?
+    @Published var heading: Double? // Device heading in degrees (0 = North)
     
     private let locationManager = CLLocationManager()
     private var cancellables = Set<AnyCancellable>()
@@ -107,6 +125,8 @@ extension LocationService: CLLocationManagerDelegate {
             switch manager.authorizationStatus {
             case .authorizedWhenInUse, .authorizedAlways:
                 self.startLocationUpdates()
+                // Start heading updates for live Qibla compass
+                self.startHeadingUpdates()
             case .denied, .restricted:
                 self.locationError = "Location access denied. Please enable in Settings."
             case .notDetermined:
@@ -128,13 +148,23 @@ extension LocationService: CLLocationManagerDelegate {
         // Get city name for this location
         geocodeLocation(location)
         
-        // Stop after getting first location to preserve battery
-        manager.stopUpdatingLocation()
+        // Note: We keep location updates running to support travel mode
+        // For battery optimization, consider stopping after significant location changes
+        // rather than stopping immediately. The distanceFilter (1000m) already limits updates.
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         DispatchQueue.main.async {
             self.locationError = "Location error: \(error.localizedDescription)"
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        DispatchQueue.main.async {
+            // Update heading for live Qibla compass
+            // Use trueHeading if available, otherwise magnetic heading
+            let headingValue = newHeading.trueHeading >= 0 ? newHeading.trueHeading : newHeading.magneticHeading
+            self.heading = headingValue
         }
     }
 }

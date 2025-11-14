@@ -6,15 +6,17 @@
 //
 
 import SwiftUI
+import FamilyControls
 
 /// Blocklists management screen
 struct BlocklistsView: View {
+    @EnvironmentObject var appState: AppState
     @State private var blocklists: [Blocklist] = [
         Blocklist(name: "Default", isDefault: true),
         Blocklist(name: "Social Media", isDefault: false),
     ]
     @State private var showAddBlocklist = false
-    // @State private var showPaywall = false // FUTURE: Premium feature paywall
+    @State private var showPaywall = false
     @State private var selectedBlocklist: Blocklist?
     
     var body: some View {
@@ -33,13 +35,15 @@ struct BlocklistsView: View {
                 } else {
                     ScrollView {
                         VStack(spacing: DesignSystem.Spacing.md) {
-                            // FUTURE: Premium feature - limit to 1 free blocklist
-                            // SSBanner(
-                            //     message: "You have 1 free blocklist. Upgrade to Pro for unlimited blocklists.",
-                            //     type: .info,
-                            //     action: { showPaywall = true }
-                            // )
-                            // .padding(.horizontal, DesignSystem.Spacing.md)
+                            // Premium banner if not Pro and at limit
+                            if !appState.isPro && blocklists.count >= 1 {
+                                SSBanner(
+                                    message: "You have 1 free blocklist. Upgrade to Pro for unlimited blocklists.",
+                                    type: .info,
+                                    action: { showPaywall = true }
+                                )
+                                .padding(.horizontal, DesignSystem.Spacing.md)
+                            }
                             
                             ForEach(blocklists) { blocklist in
                                 BlocklistCard(
@@ -61,13 +65,12 @@ struct BlocklistsView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
-                        // FUTURE: Restrict to 1 free blocklist, require Pro for more
-                        // if freeBlocklistsRemaining > 0 {
-                        //     showAddBlocklist = true
-                        // } else {
-                        //     showPaywall = true
-                        // }
-                        showAddBlocklist = true
+                        // Restrict to 1 free blocklist, require Pro for more
+                        if appState.isPro || blocklists.count < 1 {
+                            showAddBlocklist = true
+                        } else {
+                            showPaywall = true
+                        }
                     }) {
                         Image(systemName: "plus")
                     }
@@ -82,10 +85,9 @@ struct BlocklistsView: View {
             .sheet(item: $selectedBlocklist) { blocklist in
                 BlocklistDetailView(blocklist: binding(for: blocklist))
             }
-            // FUTURE: Premium feature paywall
-            // .sheet(isPresented: $showPaywall) {
-            //     PaywallView()
-            // }
+            .sheet(isPresented: $showPaywall) {
+                PaywallView()
+            }
         }
     }
     
@@ -208,73 +210,51 @@ struct AddBlocklistSheet: View {
 struct BlocklistDetailView: View {
     @Binding var blocklist: Blocklist
     @Environment(\.presentationMode) var presentationMode
-    @State private var showAddApp = false
-    @State private var showAddWebsite = false
+    @EnvironmentObject var appState: AppState
+    @State private var showActivityPicker = false
+    @State private var showScreenTimeAuth = false
     
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Apps (\(blocklist.apps.count))")) {
-                    if blocklist.apps.isEmpty {
-                        Text("No apps added")
-                            .foregroundColor(.secondary)
-                            .font(.system(size: 14))
-                    } else {
-                        ForEach(blocklist.apps) { app in
-                            HStack {
-                                Image(systemName: "app.fill")
-                                    .foregroundColor(.accentColor)
-                                Text(app.name)
+                Section(header: Text("Blocked Apps & Websites")) {
+                    // Show Screen Time authorization status
+                    if appState.screenTimeService.authorizationStatus != .approved {
+                        SSBanner(
+                            message: "Screen Time authorization required to block apps",
+                            type: .warning,
+                            action: {
+                                showScreenTimeAuth = true
                             }
-                        }
-                        .onDelete { indexSet in
-                            blocklist.apps.remove(atOffsets: indexSet)
-                        }
+                        )
                     }
                     
-                    Button(action: { showAddApp = true }) {
-                        Label("Add App", systemImage: "plus.circle.fill")
+                    // Show selected apps count if selection exists
+                    if let selection = appState.screenTimeService.selection {
+                        Text("\(selection.applicationTokens.count) apps selected")
+                            .font(.system(size: 14))
+                            .foregroundColor(.secondary)
+                        
+                        Text("\(selection.webDomainTokens.count) websites selected")
+                            .font(.system(size: 14))
+                            .foregroundColor(.secondary)
+                    } else {
+                        Text("No apps or websites selected")
+                            .foregroundColor(.secondary)
+                            .font(.system(size: 14))
+                    }
+                    
+                    Button(action: {
+                        if appState.screenTimeService.authorizationStatus == .approved {
+                            showActivityPicker = true
+                        } else {
+                            showScreenTimeAuth = true
+                        }
+                    }) {
+                        Label(appState.screenTimeService.selection != nil ? "Change Selection" : "Select Apps & Websites", systemImage: "app.badge.checkmark")
                     }
                 }
                 
-                Section(header: Text("Websites (\(blocklist.websites.count))")) {
-                    if blocklist.websites.isEmpty {
-                        Text("No websites added")
-                            .foregroundColor(.secondary)
-                            .font(.system(size: 14))
-                    } else {
-                        ForEach(blocklist.websites) { website in
-                            HStack {
-                                Image(systemName: "globe")
-                                    .foregroundColor(.accentColor)
-                                Text(website.name)
-                            }
-                        }
-                        .onDelete { indexSet in
-                            blocklist.websites.remove(atOffsets: indexSet)
-                        }
-                    }
-                    
-                    Button(action: { showAddWebsite = true }) {
-                        Label("Add Website", systemImage: "plus.circle.fill")
-                    }
-                }
-                
-                Section(header: Text("Categories (\(blocklist.categories.count))")) {
-                    if blocklist.categories.isEmpty {
-                        Text("No categories added")
-                            .foregroundColor(.secondary)
-                            .font(.system(size: 14))
-                    } else {
-                        ForEach(blocklist.categories, id: \.self) { category in
-                            HStack {
-                                Image(systemName: category.icon)
-                                    .foregroundColor(.accentColor)
-                                Text(category.rawValue)
-                            }
-                        }
-                    }
-                }
             }
             .navigationTitle(blocklist.name)
             .navigationBarTitleDisplayMode(.inline)
@@ -285,20 +265,46 @@ struct BlocklistDetailView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showAddApp) {
-                AddAppSheet { app in
-                    blocklist.apps.append(app)
-                    blocklist.lastUpdated = Date()
-                    showAddApp = false
-                }
+            .sheet(isPresented: $showActivityPicker) {
+                FamilyActivityPickerView(
+                    selection: Binding(
+                        get: { appState.screenTimeService.selection ?? FamilyActivitySelection() },
+                        set: { newSelection in
+                            appState.screenTimeService.saveSelection(newSelection)
+                            blocklist.lastUpdated = Date()
+                        }
+                    )
+                )
             }
-            .sheet(isPresented: $showAddWebsite) {
-                AddWebsiteSheet { website in
-                    blocklist.websites.append(website)
-                    blocklist.lastUpdated = Date()
-                    showAddWebsite = false
+            .alert("Screen Time Authorization Required", isPresented: $showScreenTimeAuth) {
+                Button("Settings") {
+                    appState.screenTimeService.requestAuthorization()
                 }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("Salah Shield needs Screen Time permissions to block apps during prayer times. Please authorize in Settings.")
             }
+        }
+    }
+}
+
+// MARK: - Family Activity Picker View
+struct FamilyActivityPickerView: View {
+    @Binding var selection: FamilyActivitySelection
+    @Environment(\.presentationMode) var presentationMode
+    
+    var body: some View {
+        NavigationView {
+            FamilyActivityPicker(selection: $selection)
+                .navigationTitle("Select Apps & Websites")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                }
         }
     }
 }

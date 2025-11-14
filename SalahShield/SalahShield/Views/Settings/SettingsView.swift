@@ -11,9 +11,8 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var showLocationPicker = false
+    @State private var showPaywall = false
     @State private var showCalculationMethodPicker = false
-    @State private var showAbout = false
     
     var body: some View {
         NavigationView {
@@ -22,40 +21,25 @@ struct SettingsView: View {
                 Section(header: Text("Location")) {
                     if let city = appState.selectedCity {
                         SSListRow(
-                            title: "Current City",
+                            title: "City",
                             subtitle: city,
                             icon: "mappin.circle.fill",
                             accessory: .chevron,
                             action: {
-                                showLocationPicker = true
+                                // Edit city
                             }
                         )
                     } else {
                         SSListRow(
-                            title: "Set Location",
-                            subtitle: "Required for prayer times",
+                            title: "Use Current Location",
+                            subtitle: appState.locationPermissionStatus.displayText,
                             icon: "location.fill",
-                            iconColor: .red,
                             accessory: .chevron,
                             action: {
-                                showLocationPicker = true
+                                appState.requestLocationAccess()
                             }
                         )
                     }
-                    
-                    // Location permission status
-                    SSListRow(
-                        title: "Location Access",
-                        subtitle: appState.locationPermissionStatus.displayText,
-                        icon: "location.circle.fill",
-                        iconColor: locationStatusColor,
-                        accessory: appState.locationPermissionStatus == .denied ? .chevron : .none,
-                        action: {
-                            if appState.locationPermissionStatus == .denied {
-                                appState.requestLocationAccess()
-                            }
-                        }
-                    )
                     
                     // Show location error if any
                     if let locationError = appState.locationService.locationError {
@@ -66,10 +50,7 @@ struct SettingsView: View {
                             iconColor: .red
                         )
                     }
-                }
-                
-                // Prayer Settings Section
-                Section(header: Text("Prayer Settings")) {
+                    
                     SSListRow(
                         title: "Calculation Method",
                         subtitle: appState.calculationMethod.rawValue,
@@ -95,7 +76,7 @@ struct SettingsView: View {
                         icon: "speaker.wave.2.fill",
                         accessory: .chevron,
                         action: {
-                            // TODO: Edit sound
+                            // Edit sound
                         }
                     )
                 }
@@ -110,6 +91,33 @@ struct SettingsView: View {
                     .pickerStyle(SegmentedPickerStyle())
                 }
                 
+                // Account Section
+                Section(header: Text("Account")) {
+                    SSListRow(
+                        title: appState.isPro ? "Salah Shield Pro" : "Upgrade to Pro",
+                        subtitle: appState.isPro ? "Active" : "Unlock all features",
+                        icon: "crown.fill",
+                        iconColor: .yellow,
+                        accessory: appState.isPro ? .none : .chevron,
+                        action: {
+                            if !appState.isPro {
+                                showPaywall = true
+                            }
+                        }
+                    )
+                    
+                    if !appState.isPro {
+                        SSListRow(
+                            title: "Restore Purchases",
+                            icon: "arrow.clockwise",
+                            accessory: .chevron,
+                            action: {
+                                // Restore purchases
+                            }
+                        )
+                    }
+                }
+                
                 // Support Section
                 Section(header: Text("Support")) {
                     SSListRow(
@@ -117,7 +125,7 @@ struct SettingsView: View {
                         icon: "questionmark.circle.fill",
                         accessory: .chevron,
                         action: {
-                            // TODO: Open help
+                            // Open help
                         }
                     )
                     
@@ -126,7 +134,7 @@ struct SettingsView: View {
                         icon: "envelope.fill",
                         accessory: .chevron,
                         action: {
-                            // TODO: Contact support
+                            // Contact support
                         }
                     )
                     
@@ -136,7 +144,7 @@ struct SettingsView: View {
                         iconColor: .yellow,
                         accessory: .chevron,
                         action: {
-                            // TODO: Open App Store
+                            // Open App Store
                         }
                     )
                 }
@@ -154,7 +162,7 @@ struct SettingsView: View {
                         icon: "hand.raised.fill",
                         accessory: .chevron,
                         action: {
-                            // TODO: Open privacy policy
+                            // Open privacy policy
                         }
                     )
                     
@@ -163,7 +171,7 @@ struct SettingsView: View {
                         icon: "doc.text.fill",
                         accessory: .chevron,
                         action: {
-                            // TODO: Open terms
+                            // Open terms
                         }
                     )
                 }
@@ -182,173 +190,46 @@ struct SettingsView: View {
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showLocationPicker) {
-                LocationPickerSheet(isPresented: $showLocationPicker)
-                    .environmentObject(appState)
-            }
             .sheet(isPresented: $showCalculationMethodPicker) {
-                CalculationMethodPickerSheet(isPresented: $showCalculationMethodPicker)
-                    .environmentObject(appState)
+                CalculationMethodPickerView()
             }
-        }
-    }
-    
-    private var locationStatusColor: Color {
-        switch appState.locationPermissionStatus {
-        case .authorized:
-            return .green
-        case .denied:
-            return .red
-        case .notDetermined:
-            return .orange
-        }
-    }
-}
-
-// MARK: - Location Picker Sheet
-struct LocationPickerSheet: View {
-    @EnvironmentObject var appState: AppState
-    @Binding var isPresented: Bool
-    @State private var useLocation: Bool = true
-    @State private var selectedCity: String = ""
-    @State private var searchText: String = ""
-    
-    var body: some View {
-        NavigationView {
-            VStack(spacing: DesignSystem.Spacing.lg) {
-                // Use Current Location Toggle
-                SSCard {
-                    HStack {
-                        Image(systemName: "location.fill")
-                            .font(.system(size: 24))
-                            .foregroundColor(.accentColor)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Use Current Location")
-                                .font(.system(size: 16, weight: .semibold))
-                            
-                            if let city = appState.selectedCity, appState.locationPermissionStatus == .authorized {
-                                Text(city)
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.accentColor)
-                            } else {
-                                Text("Automatically detect location")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                        
-                        Spacer()
-                        
-                        Toggle("", isOn: $useLocation)
-                    }
-                }
-                .padding(.horizontal, DesignSystem.Spacing.lg)
-                
-                // Manual City Selection
-                if (!useLocation) {
-                    SSCard {
-                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
-                            Text("Select City")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundColor(.secondary)
-                            
-                            TextField("Search for your city", text: $searchText)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .autocapitalization(.words)
-                            
-                            ScrollView {
-                                VStack(spacing: DesignSystem.Spacing.sm) {
-                                    CityRow(name: "New York, USA", isSelected: selectedCity == "New York") {
-                                        selectedCity = "New York"
-                                        appState.setManualCity("New York, USA", latitude: 40.7128, longitude: -74.0060)
-                                    }
-                                    CityRow(name: "London, UK", isSelected: selectedCity == "London") {
-                                        selectedCity = "London"
-                                        appState.setManualCity("London, UK", latitude: 51.5074, longitude: -0.1278)
-                                    }
-                                    CityRow(name: "Dubai, UAE", isSelected: selectedCity == "Dubai") {
-                                        selectedCity = "Dubai"
-                                        appState.setManualCity("Dubai, UAE", latitude: 25.2048, longitude: 55.2708)
-                                    }
-                                    CityRow(name: "Toronto, Canada", isSelected: selectedCity == "Toronto") {
-                                        selectedCity = "Toronto"
-                                        appState.setManualCity("Toronto, Canada", latitude: 43.6532, longitude: -79.3832)
-                                    }
-                                    CityRow(name: "Makkah, Saudi Arabia", isSelected: selectedCity == "Makkah") {
-                                        selectedCity = "Makkah"
-                                        appState.setManualCity("Makkah, Saudi Arabia", latitude: 21.4225, longitude: 39.8262)
-                                    }
-                                    CityRow(name: "Madinah, Saudi Arabia", isSelected: selectedCity == "Madinah") {
-                                        selectedCity = "Madinah"
-                                        appState.setManualCity("Madinah, Saudi Arabia", latitude: 24.5247, longitude: 39.5692)
-                                    }
-                                    CityRow(name: "Istanbul, Turkey", isSelected: selectedCity == "Istanbul") {
-                                        selectedCity = "Istanbul"
-                                        appState.setManualCity("Istanbul, Turkey", latitude: 41.0082, longitude: 28.9784)
-                                    }
-                                    CityRow(name: "Cairo, Egypt", isSelected: selectedCity == "Cairo") {
-                                        selectedCity = "Cairo"
-                                        appState.setManualCity("Cairo, Egypt", latitude: 30.0444, longitude: 31.2357)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .padding(.horizontal, DesignSystem.Spacing.lg)
-                }
-                
-                Spacer()
-            }
-            .padding(.top, DesignSystem.Spacing.lg)
-            .navigationTitle("Location")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
-                        isPresented = false
-                    }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
-                        if useLocation {
-                            appState.requestLocationAccess()
-                        }
-                        isPresented = false
-                    }
-                    .fontWeight(.semibold)
-                }
-            }
-            .onChange(of: useLocation) { newValue in
-                if newValue {
-                    appState.requestLocationAccess()
-                }
+            .sheet(isPresented: $showPaywall) {
+                PaywallView()
             }
         }
     }
 }
 
-// MARK: - Calculation Method Picker Sheet
-struct CalculationMethodPickerSheet: View {
+// MARK: - Calculation Method Picker
+struct CalculationMethodPickerView: View {
     @EnvironmentObject var appState: AppState
-    @Binding var isPresented: Bool
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         NavigationView {
             List {
-                ForEach(CalculationMethod.allCases, id: \.self) { method in
+                ForEach([CalculationMethod.mwl, .isna, .egypt, .makkah, .karachi, .tehran, .jafari], id: \.self) { method in
                     Button(action: {
+                        // Mark that user manually changed the method
+                        UserDefaults.standard.set(true, forKey: "hasSetDefaultMethod")
+                        
                         appState.calculationMethod = method
-                        isPresented = false
+                        
+                        // Recalculate prayer times immediately with new method
+                        if let location = appState.locationService.currentLocation {
+                            appState.prayerTimeService.calculatePrayerTimes(for: location, method: method)
+                        }
+                        
+                        dismiss()
                     }) {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(method.rawValue)
+                                Text(methodDisplayName(method))
                                     .font(.system(size: 16, weight: .medium))
                                     .foregroundColor(.primary)
                                 
-                                Text(method.description)
-                                    .font(.system(size: 14))
+                                Text(methodDescription(method))
+                                    .font(.system(size: 13))
                                     .foregroundColor(.secondary)
                             }
                             
@@ -359,22 +240,44 @@ struct CalculationMethodPickerSheet: View {
                                     .foregroundColor(.accentColor)
                             }
                         }
-                        .padding(.vertical, DesignSystem.Spacing.sm)
+                        .padding(.vertical, 4)
                     }
-                    .buttonStyle(PlainButtonStyle())
                 }
             }
-            .listStyle(InsetGroupedListStyle())
             .navigationTitle("Calculation Method")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
-                        isPresented = false
+                        dismiss()
                     }
-                    .fontWeight(.semibold)
                 }
             }
         }
     }
+    
+    private func methodDisplayName(_ method: CalculationMethod) -> String {
+        switch method {
+        case .mwl: return "Muslim World League"
+        case .isna: return "ISNA (North America)"
+        case .egypt: return "Egyptian General Authority"
+        case .makkah: return "Umm Al-Qura (Makkah)"
+        case .karachi: return "University of Karachi"
+        case .tehran: return "Institute of Geophysics, Tehran"
+        case .jafari: return "Jafari (Shia Ithna Ashari)"
+        }
+    }
+    
+    private func methodDescription(_ method: CalculationMethod) -> String {
+        switch method {
+        case .mwl: return "Used in Europe, parts of Americas"
+        case .isna: return "Recommended for USA & Canada"
+        case .egypt: return "Used in Egypt and nearby regions"
+        case .makkah: return "Used in Saudi Arabia"
+        case .karachi: return "Used in Pakistan, Bangladesh, India"
+        case .tehran: return "Used in Iran"
+        case .jafari: return "Shia Ithna Ashari jurisprudence"
+        }
+    }
 }
+
